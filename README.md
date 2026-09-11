@@ -20,8 +20,10 @@ Install the debug APK first, then open the app and create the controller passwor
 ## Build
 
 ```bash
-./gradlew assembleDebug
+./gradlew clean assembleDebug
 ```
+
+If Android Studio had previously generated template `values-night` resources, use **Build > Clean Project** after syncing. The project includes the Material resources those templates reference, plus a native night theme.
 
 The app targets Android 15 (API 35) and supports Android 8.0+ (API 26). Policy behavior can vary with Android version, management mode, and OEM implementation.
 
