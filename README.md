@@ -5,6 +5,7 @@ A minimal native Android Device Policy Controller (DPC) for organization-owned d
 - Private DNS (`no_config_private_dns`)
 - Wi-Fi settings (`no_config_wifi`)
 - Factory reset (`no_factory_reset`)
+- Physical external storage media, including USB drives and SD cards (`no_physical_media`)
 
 ## Provisioning
 

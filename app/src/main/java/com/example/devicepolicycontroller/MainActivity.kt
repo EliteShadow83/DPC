@@ -38,7 +38,8 @@ class MainActivity : Activity() {
         ManagedRestriction("External APK installs", "Block unapproved sources. Approved apps can use the managed installer below.", "no_install_unknown_sources"),
         ManagedRestriction("Private DNS", "Prevent people from changing Private DNS in Settings.", "no_config_private_dns"),
         ManagedRestriction("Wi-Fi", "Prevent changes to Wi-Fi networks and settings.", "no_config_wifi"),
-        ManagedRestriction("Factory reset", "Prevent device users from initiating a factory reset.", "no_factory_reset")
+        ManagedRestriction("Factory reset", "Prevent device users from initiating a factory reset.", "no_factory_reset"),
+        ManagedRestriction("External storage media", "Prevent mounting physical external storage such as USB drives and SD cards.", "no_physical_media")
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
