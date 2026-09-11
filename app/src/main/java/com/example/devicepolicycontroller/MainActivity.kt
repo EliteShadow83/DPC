@@ -61,6 +61,7 @@ class MainActivity : Activity() {
         linkHandlerStatus = findViewById(R.id.linkHandlerStatus)
         findViewById<Button>(R.id.allowLinkHandler).setOnClickListener { allowLinkHandler() }
         findViewById<Button>(R.id.blockExternalLinks).setOnClickListener { blockExternalLinks() }
+        findViewById<Button>(R.id.stopManaging).setOnClickListener { confirmStopManaging() }
         refresh()
         if (!hasPassword()) showPasswordDialog(changing = false) else showUnlockDialog()
     }
@@ -77,7 +78,26 @@ class MainActivity : Activity() {
         }
         renderControls(owner && unlocked)
         renderApprovedInstallers(owner && unlocked)
+        findViewById<Button>(R.id.stopManaging).isEnabled = owner && unlocked
         renderLinkHandler(owner && unlocked)
+    }
+
+    private fun confirmStopManaging() {
+        if (!dpm.isDeviceOwnerApp(packageName) || !unlocked) {
+            toast("Unlock the controller and provision device owner first.")
+            return
+        }
+        AlertDialog.Builder(this)
+            .setTitle("Stop managing this device?")
+            .setMessage("This removes this app as device owner. Managed restrictions and policy controls will no longer be enforced. This cannot be undone without provisioning the device again.")
+            .setNegativeButton("Cancel", null)
+            .setPositiveButton("Stop managing") { _, _ ->
+                dpm.clearDeviceOwnerApp(packageName)
+                unlocked = false
+                refresh()
+                toast("This app no longer manages the device.")
+            }
+            .show()
     }
 
     private fun renderLinkHandler(enabled: Boolean) {

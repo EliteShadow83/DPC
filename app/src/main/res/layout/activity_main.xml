@@ -19,6 +19,7 @@
             <Button android:id="@+id/addInstaller" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Allow" />
         </LinearLayout>
         <TextView android:id="@+id/approvedInstallers" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#344054" android:textSize="14sp" />
+        <Button android:id="@+id/stopManaging" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="32dp" android:text="Stop managing this device" />
         <Button android:id="@+id/changePassword" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:text="Change controller password" />
     </LinearLayout>
 </ScrollView>

@@ -47,3 +47,7 @@ The DPC supports this approved-installer request path on Android 14+ (API 34+), 
 ## External web links
 
 The DPC blocks external `http` and `https` links by default once it is unlocked as device owner. An administrator can enter the package name of one installed browser or link-handler app and select **Allow**. The DPC sets that app as the persistent preferred handler for external web links; selecting **Block all external links** routes those intents to a blocking activity instead. This controls Android external-link intents. It cannot prevent an app from rendering network content inside its own in-app WebView.
+
+## Stop device management
+
+After unlocking the controller, select **Stop managing this device** and confirm to call Android's device-owner removal API. This removes the DPC as device owner and ends enforcement of its managed policies. Re-enabling management later requires provisioning the device owner again.
