@@ -25,7 +25,7 @@ Install the debug APK first, then open the app and create the controller passwor
 
 If Android Studio had previously generated template `values-night` resources, use **Build > Clean Project** after syncing. The project includes the Material resources those templates reference, plus a native night theme.
 
-The app targets Android 15 (API 35), supports Android 8.0+ (API 26), and compiles both Java and Kotlin sources for JVM 17. Policy behavior can vary with Android version, management mode, and OEM implementation.
+The app targets Android 15 (API 35), supports Android 8.0+ (API 26), compiles both Java and Kotlin sources for JVM 17, and enables AndroidX for its Material Components dependency. Policy behavior can vary with Android version, management mode, and OEM implementation.
 
 ## Approved external APK installers
 
