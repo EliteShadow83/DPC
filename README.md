@@ -40,3 +40,7 @@ sendBroadcast(request)
 ```
 
 The DPC checks the Android-authenticated sending package against its allowlist before opening the URI and creating a `PackageInstaller` session. Apps not on the list cannot use this installation path. APKs must still satisfy normal Android package-signature and compatibility checks; Android versions or OEMs may require a confirmation UI for some installs.
+
+## External web links
+
+The DPC blocks external `http` and `https` links by default once it is unlocked as device owner. An administrator can enter the package name of one installed browser or link-handler app and select **Allow**. The DPC sets that app as the persistent preferred handler for external web links; selecting **Block all external links** routes those intents to a blocking activity instead. This controls Android external-link intents. It cannot prevent an app from rendering network content inside its own in-app WebView.

@@ -5,6 +5,8 @@ import android.app.AlertDialog
 import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.text.InputType
 import android.view.Gravity
@@ -25,6 +27,8 @@ class MainActivity : Activity() {
     private lateinit var ownerStatus: TextView
     private lateinit var installerPackage: EditText
     private lateinit var approvedInstallers: TextView
+    private lateinit var linkHandlerPackage: EditText
+    private lateinit var linkHandlerStatus: TextView
     private val prefs by lazy { getSharedPreferences("controller_security", Context.MODE_PRIVATE) }
     private var unlocked = false
 
@@ -49,6 +53,10 @@ class MainActivity : Activity() {
         installerPackage = findViewById(R.id.installerPackage)
         approvedInstallers = findViewById(R.id.approvedInstallers)
         findViewById<Button>(R.id.addInstaller).setOnClickListener { addApprovedInstaller() }
+        linkHandlerPackage = findViewById(R.id.linkHandlerPackage)
+        linkHandlerStatus = findViewById(R.id.linkHandlerStatus)
+        findViewById<Button>(R.id.allowLinkHandler).setOnClickListener { allowLinkHandler() }
+        findViewById<Button>(R.id.blockExternalLinks).setOnClickListener { blockExternalLinks() }
         refresh()
         if (!hasPassword()) showPasswordDialog(changing = false) else showUnlockDialog()
     }
@@ -60,8 +68,68 @@ class MainActivity : Activity() {
         } else {
             "Device owner setup required. Controls are shown but cannot be applied until this app is provisioned as device owner."
         }
+        if (owner && unlocked && prefs.getString("approved_link_handler", null) == null) {
+            setExternalLinkHandler(ComponentName(this, BlockedLinkActivity::class.java))
+        }
         renderControls(owner && unlocked)
         renderApprovedInstallers(owner && unlocked)
+        renderLinkHandler(owner && unlocked)
+    }
+
+    private fun renderLinkHandler(enabled: Boolean) {
+        linkHandlerPackage.isEnabled = enabled
+        findViewById<Button>(R.id.allowLinkHandler).isEnabled = enabled
+        findViewById<Button>(R.id.blockExternalLinks).isEnabled = enabled
+        val allowed = prefs.getString("approved_link_handler", null)
+        linkHandlerStatus.text = allowed?.let { "Allowed external-link handler: $it" }
+            ?: "External http and https links are blocked."
+    }
+
+    private fun allowLinkHandler() {
+        val handlerPackage = linkHandlerPackage.text.toString().trim()
+        if (!canManageLinks()) return
+        if (!handlerPackage.matches(Regex("[A-Za-z][A-Za-z0-9_]*(\\.[A-Za-z][A-Za-z0-9_]*)+"))) {
+            toast("Enter a valid Android package name."); return
+        }
+        if (packageManager.getLaunchIntentForPackage(handlerPackage) == null) {
+            toast("Install the link-handler app before allowing it."); return
+        }
+        setExternalLinkHandler(ComponentName(handlerPackage, findLinkActivity(handlerPackage) ?: run {
+            toast("That app cannot open web links."); return
+        }))
+        prefs.edit().putString("approved_link_handler", handlerPackage).apply()
+        linkHandlerPackage.text.clear()
+        refresh()
+        toast("External links are now routed to $handlerPackage.")
+    }
+
+    private fun blockExternalLinks() {
+        if (!canManageLinks()) return
+        setExternalLinkHandler(ComponentName(this, BlockedLinkActivity::class.java))
+        prefs.edit().remove("approved_link_handler").apply()
+        refresh()
+        toast("External http and https links are blocked.")
+    }
+
+    private fun canManageLinks(): Boolean {
+        if (unlocked && dpm.isDeviceOwnerApp(packageName)) return true
+        toast("Unlock and provision device owner first.")
+        return false
+    }
+
+    private fun setExternalLinkHandler(component: ComponentName) {
+        val filter = IntentFilter(Intent.ACTION_VIEW).apply {
+            addCategory(Intent.CATEGORY_BROWSABLE)
+            addDataScheme("http")
+            addDataScheme("https")
+        }
+        dpm.addPersistentPreferredActivity(admin, filter, component)
+    }
+
+    private fun findLinkActivity(handlerPackage: String): String? {
+        val query = Intent(Intent.ACTION_VIEW).setData(android.net.Uri.parse("https://example.com"))
+        return packageManager.queryIntentActivities(query, 0)
+            .firstOrNull { it.activityInfo.packageName == handlerPackage }?.activityInfo?.name
     }
 
     private fun renderApprovedInstallers(enabled: Boolean) {

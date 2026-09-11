@@ -4,6 +4,14 @@
         <TextView android:id="@+id/subtitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:textColor="#475467" android:textSize="16sp" />
         <TextView android:id="@+id/ownerStatus" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="20dp" android:background="@drawable/panel" android:textColor="#344054" android:textSize="14sp" />
         <LinearLayout android:id="@+id/controls" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:orientation="vertical" />
+        <TextView android:id="@+id/linkHeading" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:text="External web links" android:textColor="#101828" android:textSize="20sp" android:textStyle="bold" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:text="Choose the one approved app that receives http and https links. With no app chosen, external links are blocked." android:textColor="#475467" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+            <EditText android:id="@+id/linkHandlerPackage" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:hint="com.example.browser" android:inputType="text" />
+            <Button android:id="@+id/allowLinkHandler" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Allow" />
+        </LinearLayout>
+        <TextView android:id="@+id/linkHandlerStatus" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#344054" android:textSize="14sp" />
+        <Button android:id="@+id/blockExternalLinks" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Block all external links" />
         <TextView android:id="@+id/installerHeading" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:text="Approved APK installer apps" android:textColor="#101828" android:textSize="20sp" android:textStyle="bold" />
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:text="Approved apps can send APKs to this device owner for installation. Use their Android package name." android:textColor="#475467" />
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
