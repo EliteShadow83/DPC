@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.os.UserManager
 import android.text.InputType
 import android.view.Gravity
 import android.widget.Button
@@ -22,6 +23,7 @@ import java.util.Base64
 
 class MainActivity : Activity() {
     private lateinit var dpm: DevicePolicyManager
+    private lateinit var userManager: UserManager
     private lateinit var admin: ComponentName
     private lateinit var controls: LinearLayout
     private lateinit var ownerStatus: TextView
@@ -46,6 +48,7 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         dpm = getSystemService(DevicePolicyManager::class.java)
+        userManager = getSystemService(UserManager::class.java)
         admin = ComponentName(this, PolicyAdminReceiver::class.java)
         controls = findViewById(R.id.controls)
         ownerStatus = findViewById(R.id.ownerStatus)
@@ -169,7 +172,8 @@ class MainActivity : Activity() {
                 textSize = 16f
                 setPadding(8, 20, 8, 20)
                 isEnabled = enabled
-                isChecked = dpm.getUserRestrictions(admin).getBoolean(restriction.key, false)
+                // Read the effective system policy, not only this admin's cached policy bundle.
+                isChecked = userManager.hasUserRestriction(restriction.key)
                 setOnCheckedChangeListener { _, checked -> applyRestriction(restriction, checked) }
             }
             controls.addView(toggle, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
@@ -183,7 +187,13 @@ class MainActivity : Activity() {
             return
         }
         if (disabled) dpm.addUserRestriction(admin, restriction.key) else dpm.clearUserRestriction(admin, restriction.key)
-        toast("${restriction.title} changes ${if (disabled) "blocked" else "allowed"}.")
+        val applied = userManager.hasUserRestriction(restriction.key)
+        if (applied == disabled) {
+            toast("${restriction.title} changes ${if (disabled) "blocked" else "allowed"}.")
+        } else {
+            toast("${restriction.title} policy was not accepted by this Android version or management mode.")
+        }
+        refresh()
     }
 
     private fun showUnlockDialog() {

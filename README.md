@@ -2,7 +2,7 @@
 
 A minimal native Android Device Policy Controller (DPC) for organization-owned devices. The app locks its policy controls behind a locally stored controller password and lets an authorized administrator block or allow configuration of:
 
-- Private DNS (`no_config_private_dns`)
+- Private DNS (`no_config_private_dns`) — the app verifies the effective system restriction after applying it.
 - Wi-Fi settings (`no_config_wifi`)
 - Factory reset (`no_factory_reset`)
 - Physical external storage media, including USB drives and SD cards (`no_physical_media`)
