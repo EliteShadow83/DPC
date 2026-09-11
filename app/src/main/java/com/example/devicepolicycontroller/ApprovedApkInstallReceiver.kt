@@ -16,12 +16,15 @@ import java.io.IOException
  * A narrowly scoped installation gateway for allowlisted apps.
  *
  * An approved app sends an explicit broadcast with [Intent.data] set to a readable APK content URI
- * and FLAG_GRANT_READ_URI_PERMISSION. The DPC checks Android's authenticated broadcast sender
- * before copying the APK into a PackageInstaller session.
+ * and FLAG_GRANT_READ_URI_PERMISSION. On Android 14+ the DPC checks Android's authenticated
+ * broadcast sender before copying the APK into a PackageInstaller session.
  */
 class ApprovedApkInstallReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        val sender = sendingPackage ?: return
+        // Android 14+ exposes the authenticated sender package. Older versions cannot safely
+        // support a package allowlist for an exported broadcast receiver, so reject them.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) return
+        val sender = getSentFromPackage() ?: return
         val allowed = context.getSharedPreferences("controller_security", Context.MODE_PRIVATE)
             .getStringSet("approved_installers", emptySet()).orEmpty()
         if (sender !in allowed) return

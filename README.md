@@ -42,7 +42,7 @@ val request = Intent("com.example.devicepolicycontroller.REQUEST_APPROVED_APK_IN
 sendBroadcast(request)
 ```
 
-The DPC checks the Android-authenticated sending package against its allowlist before opening the URI and creating a `PackageInstaller` session. Apps not on the list cannot use this installation path. APKs must still satisfy normal Android package-signature and compatibility checks; Android versions or OEMs may require a confirmation UI for some installs.
+The DPC supports this approved-installer request path on Android 14+ (API 34+), where it can read Android's authenticated broadcast-sender package and check it against the allowlist. Apps not on the list cannot use this installation path. APKs must still satisfy normal Android package-signature and compatibility checks; Android versions or OEMs may require a confirmation UI for some installs.
 
 ## External web links
 
