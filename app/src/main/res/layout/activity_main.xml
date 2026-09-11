@@ -1,0 +1,16 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="24dp" android:background="@color/surface">
+        <TextView android:id="@+id/title" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Device controls" android:textColor="#101828" android:textSize="30sp" android:textStyle="bold" />
+        <TextView android:id="@+id/subtitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:textColor="#475467" android:textSize="16sp" />
+        <TextView android:id="@+id/ownerStatus" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="20dp" android:background="@drawable/panel" android:textColor="#344054" android:textSize="14sp" />
+        <LinearLayout android:id="@+id/controls" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:orientation="vertical" />
+        <TextView android:id="@+id/installerHeading" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:text="Approved APK installer apps" android:textColor="#101828" android:textSize="20sp" android:textStyle="bold" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:text="Approved apps can send APKs to this device owner for installation. Use their Android package name." android:textColor="#475467" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+            <EditText android:id="@+id/installerPackage" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:hint="com.example.installer" android:inputType="text" />
+            <Button android:id="@+id/addInstaller" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Allow" />
+        </LinearLayout>
+        <TextView android:id="@+id/approvedInstallers" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#344054" android:textSize="14sp" />
+        <Button android:id="@+id/changePassword" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:text="Change controller password" />
+    </LinearLayout>
+</ScrollView>

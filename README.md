@@ -1,0 +1,42 @@
+# Device Policy Controller
+
+A minimal native Android Device Policy Controller (DPC) for organization-owned devices. The app locks its policy controls behind a locally stored controller password and lets an authorized administrator block or allow configuration of:
+
+- Private DNS (`no_config_private_dns`)
+- Wi-Fi settings (`no_config_wifi`)
+- Factory reset (`no_factory_reset`)
+
+## Provisioning
+
+Restrictions are enforceable only when the app is a **device owner**. For a test-only, freshly reset device/emulator with USB debugging enabled:
+
+```bash
+adb shell dpm set-device-owner com.example.devicepolicycontroller/.PolicyAdminReceiver
+```
+
+Install the debug APK first, then open the app and create the controller password. Production deployments should use Android Enterprise provisioning (QR, zero-touch, or an EMM), not the test command above.
+
+## Build
+
+```bash
+./gradlew assembleDebug
+```
+
+The app targets Android 15 (API 35) and supports Android 8.0+ (API 26). Policy behavior can vary with Android version, management mode, and OEM implementation.
+
+## Approved external APK installers
+
+Turn on **External APK installs** to prevent users from enabling arbitrary unknown sources. To allow a trusted distribution app, unlock the controller, enter that app's package name under **Approved APK installer apps**, and select **Allow**. The trusted app must send an **explicit** broadcast to `ApprovedApkInstallReceiver`, set the APK `content://` URI as its data, and include `FLAG_GRANT_READ_URI_PERMISSION`:
+
+```kotlin
+val request = Intent("com.example.devicepolicycontroller.REQUEST_APPROVED_APK_INSTALL")
+    .setComponent(ComponentName(
+        "com.example.devicepolicycontroller",
+        "com.example.devicepolicycontroller.ApprovedApkInstallReceiver"
+    ))
+    .setData(apkContentUri)
+    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+sendBroadcast(request)
+```
+
+The DPC checks the Android-authenticated sending package against its allowlist before opening the URI and creating a `PackageInstaller` session. Apps not on the list cannot use this installation path. APKs must still satisfy normal Android package-signature and compatibility checks; Android versions or OEMs may require a confirmation UI for some installs.
