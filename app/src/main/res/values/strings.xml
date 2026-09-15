@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Device Policy Controller</string>
+    <string name="device_admin_description">Lets your organization apply managed device restrictions.</string>
+</resources>
